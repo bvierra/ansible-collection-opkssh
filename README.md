@@ -7,17 +7,16 @@ This Ansible collection provides roles and plugins for managing and configuring 
 
 ## Roles
 
-### `opkssh-server`
+### `opkssh_server`
 This role installs and configures the `opkssh` binary for use with OpenSSH. It supports managing users, configuring OpenID providers, and setting up SELinux policies.
 
-- **Documentation**: See the [role README](roles/opkssh-server/README.md) for detailed usage instructions.
+- **Documentation**: See the [role README](roles/opkssh_server/README.md) for detailed usage instructions.
 
 ## Requirements
 
 - Ansible >= 2.12
 - Supported Platforms:
   - Debian (all versions)
-  - Red Hat (support coming soon)
 
 ## Installation
 
@@ -49,11 +48,11 @@ ansible-galaxy collection install -r requirements.yml
 - name: Configure opkssh
   hosts: all
   roles:
-    - role: bvierra.opkssh.opkssh-server
+    - role: bvierra.opkssh.opkssh_server
 ```
 ### Variables
 
-Refer to the [role documentation](roles/opkssh-server/README.md) for a complete list of configurable variables.
+Refer to the [role documentation](roles/opkssh_server/README.md) for a complete list of configurable variables.
 
 ## License
 

@@ -1,0 +1,53 @@
+---
+# If set to true this will disable the ability to have a policy file in the user's home directory.
+opkssh_disable_home_policy: false
+
+# Should this role restart sshd to apply the changes made to the sshd_config file?
+opkssh_restart_sshd: true
+
+# The OPKSSH Version as listed at https://github.com/openpubkey/opkssh/releases (without the leading v)
+# This can also be set to "latest" to always get the latest version, however this will grab the latest version
+# everytime the playbook is run.
+opkssh_version: "0.3.0"
+
+# opkssh_sha256_expected is the sha256 checksum of the opkssh binary. This is used to verify that the binary has not been tampered with. 
+# You should not need to set this unless you are using a custom version of opkssh or are using a version that is newer than the one supported by this role.
+#opkssh_sha256_expected:
+
+
+# opkssh_github_repo is the github repository where the opkssh binary is hosted. This is used to download the binary.
+# This should only be changed if you are using a forked repo
+#opkssh_github_repo: "openpubkey/opkssh"
+
+
+# Should this role manage the auth_id file? If so make sure you set the opkssh_users variable in users.yml
+opkssh_manage_auth_id: true
+
+# Should each provider be enabled in the providers file.
+opkssh_providers_google: true
+opkssh_providers_microsoft: true
+opkssh_providers_gitlab: true
+
+# The amount of time that a provider token is valid for. This is used to set the expiration time for the provider token.
+# Only used if the provider is enabled.
+opkssh_providers_google_expiration: "24h"
+opkssh_providers_microsoft_expiration: "24h"
+opkssh_providers_gitlab_expiration: "24h"
+
+# This array is used to create the auth_id file. Each opkssh_user consists of 3 parts:
+#  - principal: This is the unix username that the user will login to.
+#  - id: This is either the email address or the subscriber ID of the user.
+#  - issuer: This is the issuer of the token. There are 4 built in issuer aliases:
+#    - google: https://accounts.google.com
+#    - microsoft: https://login.microsoftonline.com
+#    - azure: https://login.microsoftonline.com
+#    - gitlab: https://gitlab.com
+#    Please note, you can also use the full URL of the issuer if it does not have an alias.
+
+opkssh_users:
+  - principal: "user"
+    id: "nobody@gmail.null"
+    issuer: "google"
+  - principal: "user2"
+    id: "fake@outlook.null"
+    issuer: "azure"

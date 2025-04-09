@@ -1,0 +1,13 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: opkssh_server
+  author: bvierra
+  description: Install and configure opkssh for openssh.
+  min_ansible_version: "2.12"
+  license: MIT
+  platforms:
+    - name: Debian
+      versions:
+        - all

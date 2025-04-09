@@ -1,0 +1,33 @@
+---
+###
+# Get status of SELinux and if it is not disabled, include configure-selinux.yml
+###
+- name: Get the current status of SELinux
+  ansible.builtin.command:
+    cmd: "getenforce"
+  register: opkssh_getenforce_cmd_status
+
+- name: Define opkssh_selinux_status
+  ansible.builtin.set_fact:
+    opkssh_selinux_status: "{{ opkssh_getenforce_cmd_status.stdout }}"
+
+- ansible.builtin.include_tasks: configure-selinux.yml
+  when: opkssh_selinux_status != "Disabled"
+
+- name: "Ensure that {{ opkssh_auth_cmd_user }} sudo rights are setup"
+  ansible.builtin.template:
+    src: sudoers.j2
+    dest: "{{ opkssh_sudoers_path }}"
+    mode: "0440"
+  when: not opkssh_disable_home_policy
+
+- name: "Ensure that {{ opkssh_auth_cmd_user }} has been removed"
+  ansible.builtin.file:
+    path: "{{ opkssh_sudoers_path }}"
+    state: absent
+  when: opkssh_disable_home_policy  
+
+- name: "Include SSH Configuration Tasks"
+  ansible.builtin.include_tasks: configure-sshd.yml
+  when: opkssh_sshd_config is defined
+  

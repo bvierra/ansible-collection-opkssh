@@ -1,0 +1,105 @@
+---
+- name: Verify architecture and normalize architecture name
+  block:
+    - ansible.builtin.fail:
+        msg: "Unsupported architecture: {{ ansible_architecture }}"
+      when: ansible_architecture not in ['x86_64', 'amd64']
+
+    - name: Normalize architecture x86_64 to amd64
+      ansible.builtin.set_fact:
+        opkssh_server_normalized_architecture: 'amd64'
+      when: ansible_architecture in ['x86_64', 'amd64']
+
+- name: Include OS-specific tasks
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "vars/{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+      - "vars/{{ ansible_os_family }}.yml"
+      skip: true
+
+- name: Include opkssh specific variables
+  ansible.builtin.include_vars: "vars/Opkssh.yml"
+
+- name: Define opkssh_cmd.
+  ansible.builtin.set_fact:
+    opkssh_cmd: "{{ __opkssh_cmd }}"
+  when: opkssh_cmd is not defined
+
+- name: Define opkssh_auth_cmd_user.
+  ansible.builtin.set_fact:
+    opkssh_auth_cmd_user: "{{ __opkssh_auth_cmd_user }}"
+  when: opkssh_auth_cmd_user is not defined
+
+- name: Define opkssh_auth_cmd_group.
+  ansible.builtin.set_fact:
+    opkssh_auth_cmd_group: "{{ __opkssh_auth_cmd_group }}"
+  when: opkssh_auth_cmd_group is not defined
+
+- name: Define opkssh_auth_cmd_mode.
+  ansible.builtin.set_fact:
+    opkssh_auth_cmd_mode: "{{ __opkssh_auth_cmd_mode }}"
+  when: opkssh_auth_cmd_mode is not defined
+
+- name: Define opkssh_sudoers_path.
+  ansible.builtin.set_fact:
+    opkssh_sudoers_path: "{{ __opkssh_sudoers_path }}"
+  when: opkssh_sudoers_path is not defined
+
+- name: Define opkssh_config_dir.
+  ansible.builtin.set_fact:
+    opkssh_config_dir: "{{ __opkssh_config_dir }}"
+  when: opkssh_config_dir is not defined
+
+- name: Define opkssh_sshd_daemon.
+  ansible.builtin.set_fact:
+    opkssh_sshd_daemon: "{{ __opkssh_sshd_daemon }}"
+  when: opkssh_sshd_daemon is not defined
+
+- name: Define opkssh_sshd_config.
+  ansible.builtin.set_fact:
+    opkssh_sshd_config: "{{ __opkssh_sshd_config }}"
+  when: opkssh_sshd_config is not defined
+
+- name: Define opkssh_restart_sshd.
+  ansible.builtin.set_fact:
+    opkssh_restart_sshd: "{{ __opkssh_restart_sshd }}"
+  when: opkssh_restart_sshd is not defined
+
+- name: Define opkssh_disable_home_policy.
+  ansible.builtin.set_fact:
+    opkssh_disable_home_policy: "{{ __opkssh_disable_home_policy }}"
+  when: opkssh_disable_home_policy is not defined
+
+- name: Define opkssh_sha256_expected for the opkssh_version.
+  ansible.builtin.set_fact:
+    opkssh_sha256_expected: "{{ opkssh_versions[opkssh_version].sha256 }}"
+  when:
+    - opkssh_sha256_expected is not defined
+    - opkssh_version in opkssh_versions.keys()
+
+- name: Define opkssh_github_repo
+  ansible.builtin.set_fact:
+    opkssh_github_repo: "{{ __opkssh_github_repo }}"
+  when: opkssh_github_repo is not defined
+
+- name: Set opkssh_cmd_download_url to the versioned download url
+  ansible.builtin.set_fact:
+    opkssh_cmd_download_url: "https://github.com/{{ opkssh_github_repo }}/releases/download/v{{ opkssh_version }}/opkssh-linux-{{ opkssh_server_normalized_architecture }}"
+  when:
+    - opkssh_cmd_download_url is not defined
+    - opkssh_github_repo is defined
+    - opkssh_version != "latest"
+  
+- name: Set opkssh_cmd_download_url to the latest download url
+  ansible.builtin.set_fact:
+    opkssh_cmd_download_url: "https://github.com/{{ opkssh_github_repo }}/releases/latest/download/opkssh-linux-{{ opkssh_server_normalized_architecture }}"
+  when:
+    - opkssh_cmd_download_url is not defined
+    - opkssh_github_repo is defined
+    - opkssh_version != "latest"
+
+- name: Define opkssh_prereq_packages
+  ansible.builtin.set_fact:
+    opkssh_prereq_packages: "{{ __opkssh_prereq_packages }}"
+  when: opkssh_prereq_packages is not defined

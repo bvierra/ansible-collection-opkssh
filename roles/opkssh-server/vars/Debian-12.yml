@@ -1,0 +1,14 @@
+---
+__opkssh_cmd: "/usr/local/bin/opkssh"
+__opkssh_auth_cmd_user: "opksshuser"
+__opkssh_auth_cmd_group: "opksshuser"
+__opkssh_auth_cmd_mode: "0755"
+__opkssh_sudoers_path: "/etc/sudoers.d/opkssh"
+__opkssh_config_dir: "/etc/opk"
+__opkssh_sshd_daemon: "ssh"
+__opkssh_sshd_config: "/etc/ssh/sshd_config"
+__opkssh_restart_sshd: true
+__opkssh_disable_home_policy: false
+__opkssh_prereq_packages:
+  - "openssh-server"
+  - "selinux-utils"

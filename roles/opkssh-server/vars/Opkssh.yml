@@ -1,0 +1,6 @@
+---
+__opkssh_github_repo: "openpubkey/opkssh"
+opkssh_versions:
+  0.3.0:
+    "sha256": "014c6105c8d0546c06bf2f9c3b87ea0ad204a96e31cc9669e474d25cefd77d48"
+    

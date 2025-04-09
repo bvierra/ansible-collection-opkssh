@@ -1,0 +1,26 @@
+---
+- name: Ensure that opkssh is loaded in the sshd_config
+  block:
+    - name: Make sure that AuthorizedKeysCommand is correctly set in sshd_config
+      ansible.builtin.lineinfile:
+        path: "{{ opkssh_sshd_config }}"
+        regexp: '^AuthorizedKeysCommand\s.*$'
+        line: "AuthorizedKeysCommand {{ opkssh_cmd }} verify %u %k %t"
+        state: present
+      register: opkssh_sshd_config_changed_AuthKeysCommand
+
+    - name: Make sure that AuthorizedKeysCommandUser is correctly set in sshd_config 
+      ansible.builtin.lineinfile:
+        path: "{{ opkssh_sshd_config }}"
+        regexp: '^AuthorizedKeysCommandUser\s.*$'
+        line: "AuthorizedKeysCommandUser {{ opkssh_auth_cmd_user }}"
+        state: present
+      register: opkssh_sshd_config_changed_AuthKeysCommandUser
+
+    - name: Restart sshd if sshd_config was modified
+      ansible.builtin.systemd:
+        name: sshd
+        state: restarted
+      when: >
+        opkssh_sshd_config_changed_AuthKeysCommand.changed or
+        opkssh_sshd_config_changed_AuthKeysCommandUser.changed

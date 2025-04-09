@@ -1,0 +1,23 @@
+---
+# Include Variables
+- name: "Include Variables"
+  ansible.builtin.include_tasks: variables.yml
+
+# Setup based on OS
+- name: "Setup Debian"
+  ansible.builtin.include_tasks: "setup-Debian.yml"
+  when: ansible_os_family == "Debian"
+
+- name: "Setup RedHat"
+  ansible.builtin.include_tasks: "setup-RedHat.yml"
+  when: ansible_os_family == "RedHat"
+
+- name: "Setup OPKSSH"
+  ansible.builtin.include_tasks: "setup-Opkssh.yml"
+
+- name: "Configure OPKSSH"
+  ansible.builtin.include_tasks: "configure.yml"
+
+- name: "Setup auth_id users"
+  ansible.builtin.include_tasks: users.yml
+  when: opkssh_manage_auth_id | bool

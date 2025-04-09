@@ -1,0 +1,10 @@
+---
+- name: Installing pre-req packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ opkssh_prereq_packages }}"
+  when: opkssh_prereq_packages is defined
+  tags:
+    - opkssh
+    - opkssh_install

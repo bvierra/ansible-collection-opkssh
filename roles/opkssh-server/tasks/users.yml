@@ -1,0 +1,10 @@
+---
+- name: Create auth_id users
+  ansible.builtin.template:
+    src: templates/auth_id.j2
+    dest: "{{ opkssh_config_dir }}/auth_id"
+  when:
+   - opkssh_users | length > 0
+   - opkssh_manage_auth_id | bool
+  tags:
+    - auth_id

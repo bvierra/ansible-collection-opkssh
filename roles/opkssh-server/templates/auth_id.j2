@@ -1,0 +1,9 @@
+{%- for user in opkssh_users -%}
+  {%- if user.principal is defined -%}
+    {%- if user.id is defined -%}
+      {%- if user.issuer is defined -%}
+{{ user.principal }} {{ user.id }} {{ user.issuer }}
+{% endif -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
